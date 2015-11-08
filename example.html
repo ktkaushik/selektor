@@ -1,0 +1,60 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'> -->
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <link rel="stylesheet" href="dist/editor.min.css">
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <!-- <div id="selektor-block" class="hide">
+            <a href="#" class="bold">B</a>
+            <a href="#" class="italic">I</a>
+        </div> -->
+
+        <div id="multi-options-block" class="hide multi-options-block">
+            <a href="#" id="plus-icon"> + </a>
+        </div>
+
+        <div id="options-toolbar" class="hide">
+            <a href="#" id="image-upload-icon"> <img class="action-icon" alt="add an image" src="assets/images/camera.png"> </a>
+        </div>
+
+
+        <div class="full-width hide">
+            <img id="image-preview" class="full-width" src="#" alt="your image" />
+        </div>
+
+        <!-- The one without the preloaded data -->
+        <div class="editor-main" id="editor-main" contenteditable="true" tabindex="1">
+            <!-- <div class="paragraph">
+                <span class="placeholder">Don't stand back. Start writing now..</p>
+            </div> -->
+        </div>
+
+        <!-- <div class="editor-main" id="editor-main" contenteditable="true" tabindex="0">
+            <div><b>Raven</b> by <i>Edgar Allan Poe</i></div><div><br></div><div>Once upon a Midnight Dreary,</div><div>While i pondered, weak and weary,</div><div>Over many a quaint and curious volume of forgotten lore --</div><div>While i nodded, nearly napping, suddenly there came a tapping,</div><div>As of someone gently rapping, rapping at my chamber door.</div><div>"<i>Tis some visitor</i>", I muttered, "<i>tapping at my chamber door - Only this and nothing more.</i>"</div><div><br></div><div>Ah, distinctly i remember it was in the bleak December;</div><div><br></div><div><i>You can complete the rest</i></div><div><br></div>
+            <div class="paragraph">
+                </div>
+        </div> -->
+
+        <input type="file" class="hide" id="image-upload">
+
+        <script src="src/jquery.min.js"></script>
+        <script src="dist/editor.min.js"></script>
+        <script type="text/javascript">
+            var editor = new Editor({id: 'editor-main'});
+        </script>
+
+    </body>
+</html>

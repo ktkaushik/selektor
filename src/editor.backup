@@ -1,0 +1,189 @@
+var $editor = $('#editor-main')
+      , $selektorBlock = $('#selektor-block')
+      , $optionsToolbar = $('#options-toolbar')
+      , $multiOptionsBlock = $('#multi-options-block');
+
+    // GLOBAL
+    EDITOR = document.getElementById('editor-main');
+
+    // var isOpera = !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+    //     // Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
+    // var isFirefox = typeof InstallTrigger !== 'undefined';   // Firefox 1.0+
+    // var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+    //     // At least Safari 3+: "[object HTMLElementConstructor]"
+    // var isChrome = !!window.chrome && !isOpera;              // Chrome 1+
+
+    // Click on the + icon to reveal other options
+   $multiOptionsBlock.click(function (event) {
+        event.preventDefault();
+        $(this).toggleClass('slide-options')
+        $optionsToolbar.toggleClass('hide');
+    })
+
+    // Click on the editor to move the plus icon
+    $editor.click(function (event) {
+        var node = Util.getSelectionStart();
+
+        $multiOptionsBlock.removeClass('hide');
+
+        var offsetNode = Util.findPos(node)
+          , offsetEditor = Util.findPos(EDITOR);
+
+        $multiOptionsBlock.css({ 
+            top: offsetNode.top - 5, 
+            left: offsetEditor.left - 20
+        })
+
+        $optionsToolbar.css({ 
+            top: offsetNode.top - 5, 
+            left: offsetEditor.left + 20
+        })
+    })
+
+    $('.bold').click(function (event) {
+        event.preventDefault();
+        document.execCommand('bold');
+    })
+
+    $('.italic').click(function (event) {
+        event.preventDefault();
+        document.execCommand('italic');
+    })
+
+    // Release your mouse/touchpad click
+    $editor.mouseup(function (event) {
+        workOnSelection();
+    })
+
+    // Double click
+    $editor.dblclick(function (event) {
+        workOnSelection();
+    })
+
+    // Click on the image icon
+    $('#image-upload-icon').click(function (event) {
+        $("#image-upload").trigger('click');
+    })
+
+    // File is attached from teh user's file system
+    $("#image-upload").change(function () {
+        addImage(this);
+    })
+
+    // Fired each time a key is lifted after press
+    $(document).keyup(function (event) {
+
+        var key = event.keyCode || event.which; 
+        // Got to hate firefox
+        // if (isFirefox) {
+        //     if (key === 13) {
+
+        //     }
+        // };
+
+        // hide the optionsToolbar and also perform the transition here thus trigerring click
+        if (!$optionsToolbar.hasClass('hide')) {
+            $multiOptionsBlock.trigger('click');
+        }
+
+        // detect the selection - this seems like an overkill to check each time
+        // - check the next comment for more info
+        workOnSelection();
+
+        // the only reason we are not using this is because this won't work on Mac. Unable to find Cmd + A for some reason
+        /**
+           if (
+                key === 16 || Checks for Enter key press
+                (event.shiftKey && (key > 36) && (key < 41)) ||  Checks for Shift key press and arrow buttons press
+                (event.ctrlKey && (key === 65))) { // Checks for Ctrl + a/A
+            } else {
+                removeSelection();
+            }
+        */
+
+        // get the html element from the selection
+        var node = Util.getSelectionStart();
+
+        // only display the + icon if there are less than 10 elements typed
+        // if the user has continued typing more than 10 then we can hide it condsidering the 
+        // the user will not use it
+
+        // if the user wishes to then he/she can click to make it appear
+        if (node) {
+
+            if (node.textContent.trim().length < 10) {
+
+                var offsetNode = Util.findPos(node)
+                  , offsetEditor = Util.findPos(EDITOR);
+
+                $multiOptionsBlock.removeClass('hide');
+                $multiOptionsBlock.css({ 
+                    top: offsetNode.top - 5, 
+                    left: offsetEditor.left - 20
+                })
+
+                // move the options toolbar along side the + icon
+                $optionsToolbar.css({ 
+                    top: offsetNode.top - 5, 
+                    left: offsetEditor.left + 20
+                })
+
+            } else {
+                // hide the + icon
+                $multiOptionsBlock.addClass('hide');
+            }
+        };
+    })
+
+    function removeSelection () {
+        $selektorBlock.addClass('hide');
+    }
+
+    // get the selection and display the selektor block with bold and italic options
+    function workOnSelection () {
+        if (window.getSelection) {
+            if (!window.getSelection().isCollapsed) {
+
+                var offets = Util.getSelectionCoords();
+
+                if (offets) {
+                    $selektorBlock.removeClass('hide');
+                    $selektorBlock.css({
+                        top: offets.top - 30,
+                        left: offets.left
+                    })
+                }
+                return;
+            } 
+        }
+        return removeSelection();
+    }
+
+    // add the image by creating an img element on teh fly and prepending to the cursor element
+    function addImage (input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (event) {
+                var node = Util.getSelectionStart();
+
+                if (node.className === 'placeholder') {
+                    node = node.parentNode;
+                }
+
+                // create an image and prepend
+                var img = document.createElement('img');
+                img.style.width = '100%';
+                img.style.margin = '10px 0';
+                img.setAttribute('src', event.target.result);
+
+                node.insertBefore(img, node.firstChild);
+
+                if (!$optionsToolbar.hasClass('hide')) {
+                    $multiOptionsBlock.trigger('click');
+                }
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
